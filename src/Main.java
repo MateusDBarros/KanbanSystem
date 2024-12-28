@@ -78,7 +78,7 @@ public class Main {
 
         String url = "jdbc:postgresql://localhost:5432/KanbanDatabase";
         String user = "postgres";
-        String password = "lilY@";
+        String password = ""; // Insira a senha de seu banco de dados
 
         Class.forName("org.postgresql.Driver");
         Connection conn = DriverManager.getConnection(url, user, password);
