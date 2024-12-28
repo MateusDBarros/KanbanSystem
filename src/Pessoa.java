@@ -11,7 +11,7 @@ public class Pessoa {
         SENIOR(2, "SENIOR");
 
         private int level;
-        private final String description;
+        private String description;
 
         LevelType(int level, String description) {
             this.level = level;
