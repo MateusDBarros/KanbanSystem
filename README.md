@@ -22,18 +22,5 @@ Este projeto é um sistema simples de gerenciamento de pessoas utilizando um ban
 - Banco de Dados PostgreSQL
 - Driver JDBC para PostgreSQL
 
-## Configuração do Banco de Dados
 
-1. **Criar Banco de Dados**:
-   
-   Crie um banco de dados PostgreSQL chamado `KanbanDatabase` ou altere a URL de conexão no código.
-
-   ```sql
-   CREATE DATABASE KanbanDatabase;
-   CREATE SEQUENCE kanban_userid_seq START 1;
-CREATE TABLE kanbantable (
-    userid INT PRIMARY KEY DEFAULT nextval('kanban_userid_seq'),
-    name VARCHAR(255),
-    level INT
-);
 
