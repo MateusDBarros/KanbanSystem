@@ -264,18 +264,20 @@ public class Main {
 
 
 
-    private static void logo(){
-        System.out.println(" _   __               _                   \n" +
-                "| | / /              | |                  \n" +
-                "| |/ /   __ _  _ __  | |__    __ _  _ __  \n" +
-                "|    \\  / _` || '_ \\ | '_ \\  / _` || '_ \\ \n" +
-                "| |\\  \\| (_| || | | || |_) || (_| || | | |\n" +
-                "\\_| \\_/ \\__,_||_| |_||_.__/  \\__,_||_| |_|\n" +
-                "                                          \n" +
-                "                                          \n");
+    private static void logo() {
+        System.out.println("""
+                 _   __               _                   
+                | | / /              | |                  
+                | |/ /   __ _  _ __  | |__    __ _  _ __  
+                |    \\  / _` || '_ \\ | '_ \\  / _` || '_ \\ 
+                | |\\  \\| (_| || | | || |_) || (_| || | | |
+                \\_| \\_/ \\__,_||_| |_||_.__/  \\__,_||_| |_|
+                
+                
+                """);
     }
 
-    private static void showAuthorMessage() {
+        private static void showAuthorMessage() {
         System.out.println("\n=== Software made by Mateus D Barros ===");
         logo();
         System.out.println("109 97 116 101 117 115 68 98 97 114 114 111 115");
