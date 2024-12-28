@@ -30,3 +30,10 @@ Este projeto é um sistema simples de gerenciamento de pessoas utilizando um ban
 
    ```sql
    CREATE DATABASE KanbanDatabase;
+   CREATE SEQUENCE kanban_userid_seq START 1;
+CREATE TABLE kanbantable (
+    userid INT PRIMARY KEY DEFAULT nextval('kanban_userid_seq'),
+    name VARCHAR(255),
+    level INT
+);
+
