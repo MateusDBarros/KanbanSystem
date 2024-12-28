@@ -84,7 +84,6 @@ public class Main {
         Connection conn = DriverManager.getConnection(url, user, password);
         System.out.println("Conexão bem-sucedida\nIniciando o programa...\n\n");
 
-        pessoas.clear(); // Limpando a lista antes da recuperação dos dados
         pessoas = getPerson(conn); // Recupera os dados
 
         boolean terminate = false;
@@ -104,7 +103,7 @@ public class Main {
             System.out.println("3. Atualizar Registro.");
             System.out.println("4. Deletar registro");
             System.out.println("5. Encerrar...");
-            System.out.printf("O que faremos hoje? ");
+            System.out.print("O que faremos hoje? ");
             int userInput = scanner.nextInt();
             scanner.nextLine();
             System.out.println();
@@ -118,7 +117,7 @@ public class Main {
                     char userChoice = 'x';
 
                     while (userChoice != 'y' && userChoice != 'n') {
-                        System.out.printf("Deseja confirmar o registro? ('y'/'n') ");
+                        System.out.print("Deseja confirmar o registro? ('y'/'n') ");
                         userChoice = scanner.next().charAt(0);
                         scanner.nextLine();
 

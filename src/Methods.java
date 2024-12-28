@@ -29,17 +29,6 @@ public class Methods{
             return search(pessoas, name, mid + 1, r);
     }
 
-
-    public static void delete(ArrayList<Pessoa> pessoas, int index) {
-        String name = pessoas.get(index).getName();
-        pessoas.remove(index);
-        for (int i = 0; i < pessoas.size(); i++) {
-            pessoas.get(i).setId(i + 1);
-        }
-
-        System.out.println(name+ " Excluido com sucesso!");
-    }
-
     public static int confirm(char x) {
         if (x == 'y'){
             return 1;
