@@ -201,10 +201,9 @@ public class Main {
                                     updatePerson(conn, currentPerson);
                                     System.out.println("Status atualizado!");
                                 }
-                            } else if (choice == 3) {
-                                break;
-                            } else {
+                            } else if (choice != 3) {
                                 System.out.println("Opção inválida!");
+                                break;
                             }
                         }
                     }
