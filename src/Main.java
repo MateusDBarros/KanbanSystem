@@ -29,7 +29,7 @@ public class Main {
         }
     }
 
-    // Metodo para resetar a sequência quando não houver registros
+    // Reseta a sequencia caso vazia
     public static void resetSequenceIfEmpty(Connection conn) throws SQLException {
         String checkSql = "SELECT COUNT(*) FROM kanbantable";
         String resetSeqSql = "ALTER SEQUENCE kanban_userid_seq RESTART WITH 1";  // Reseta a sequência
@@ -73,7 +73,7 @@ public class Main {
     // Função Principal
     public static void main(String[] args) throws Exception {
         Scanner scanner = new Scanner(System.in);
-        ArrayList<Pessoa> pessoas = new ArrayList<>();
+        ArrayList<Pessoa> pessoas;
 
 
         String url = "jdbc:postgresql://localhost:5432/KanbanDatabase";
@@ -176,7 +176,7 @@ public class Main {
                             System.out.println("1. Atualizar Nome.");
                             System.out.println("2. Atualizar Status.");
                             System.out.println("3. Voltar ao menu");
-                            System.out.printf("O que deseja atualizar? ");
+                            System.out.print("O que deseja atualizar? ");
                             choice = scanner.nextInt();
                             scanner.nextLine();
                             System.out.println();
