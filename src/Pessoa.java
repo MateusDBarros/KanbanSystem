@@ -10,29 +10,37 @@ public class Pessoa {
         PLENO(1, "PLENO"),
         SENIOR(2, "SENIOR");
 
-        private int level;
-        private String description;
+        private final int level;
+        private final String description;
 
         LevelType(int level, String description) {
             this.level = level;
             this.description = description;
         }
 
+        // Getter para o valor numérico do nível
         public int getLevel() {
             return level;
         }
 
+        // Getter para a descrição do nível
         public String getDescription() {
             return description;
         }
 
+        // Método para obter o LevelType a partir do valor numérico
         public static LevelType getByLevel(int level) {
-            for (LevelType type : values()) {
-                if (type.getLevel() == level) {
-                    return type;
+            for (LevelType levelType : values()) {
+                if (levelType.getLevel() == level) {
+                    return levelType;
                 }
             }
-            return null;
+            return null; // Caso não encontre o valor
+        }
+
+        @Override
+        public String toString() {
+            return description;
         }
     }
 
