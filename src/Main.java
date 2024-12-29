@@ -70,21 +70,30 @@ public class Main {
             stmt.executeUpdate();
         }
     }
+
+    // Sequências ANSI
+    static final String RESET = "\u001B[0m";
+    static final String RED = "\u001B[31m";
+    static final String GREEN = "\u001B[32m";
+    static final String YELLOW = "\u001B[33m";
+    static final String BLUE = "\u001B[34m";
+
     // Função Principal
     public static void main(String[] args) throws Exception {
         Scanner scanner = new Scanner(System.in);
         ArrayList<Pessoa> pessoas;
 
 
-        String url = "jdbc:postgresql://localhost:5432/KanbanDatabase";
+        String url = "jdbc:postgresql://localhost:5432/KanbanDatabase"; // Troque o nome do banco de dados de acordo com o seu
         String user = "postgres";
-        String password = ""; // Insira a senha de seu banco de dados
+        String password = "*****"; //utilize a senha de seu PostgreSQL
 
         Class.forName("org.postgresql.Driver");
         Connection conn = DriverManager.getConnection(url, user, password);
         System.out.println("Conexão bem-sucedida\nIniciando o programa...\n\n");
 
         pessoas = getPerson(conn); // Recupera os dados
+        carregamento();
 
         boolean terminate = false;
         while (!terminate) {
@@ -98,12 +107,7 @@ public class Main {
             // Exibe a logo
             //logo();
             // Menu de escolhas
-            System.out.println("1. Adicionar Novo Registro.");
-            System.out.println("2. Vizualizar.");
-            System.out.println("3. Atualizar Registro.");
-            System.out.println("4. Deletar registro");
-            System.out.println("5. Encerrar...");
-            System.out.print("O que faremos hoje? ");
+            exibirMenu();
             int userInput = scanner.nextInt();
             scanner.nextLine();
             System.out.println();
@@ -114,31 +118,33 @@ public class Main {
                 case 1 -> {
                     System.out.print("Digite o nome do novo registro: ");
                     String name = scanner.nextLine();
-                    char userChoice = 'x';
+                    if (name.isEmpty()) {
+                        System.out.println(RED + "Erro: Nome não pode ser vazio!" + RESET);
+                        System.out.println();
+                        break; // Encerra a execução do case 1
+                    }
 
-                    while (userChoice != 'y' && userChoice != 'n') {
-                        System.out.print("Deseja confirmar o registro? ('y'/'n') ");
-                        userChoice = scanner.next().charAt(0);
-                        scanner.nextLine();
+                    String userChoice = "";
 
-                        // Cria novo registro caso usuario confirme
-                        if (Methods.confirm(userChoice) == 1) {
-                            Pessoa currentPersonn = new Pessoa(name, 0);
-                            // Adiciona o registro temporário com ID = 0
-                            pessoas.add(currentPersonn);
-                            // Insere no banco e atualiza o ID
-                            newPerson(conn, currentPersonn);
-                            System.out.println("Novo registro adicionado.");
-                            System.out.println("ID gerado: " + currentPersonn.getId());  // Exibindo o ID gerado
-                            System.out.println();
-                            break;
-                        } else if (Methods.confirm(userChoice) == 0) {
-                            System.out.println("Retornando ao menu principal.");
-                            System.out.println();
-                            break;
-                        } else System.out.println("Opção invalida");
+                    while (!userChoice.equals("y") && !userChoice.equals("n")) {
+                        System.out.print("Deseja confirmar o registro? ('y'/'n'): ");
+                        userChoice = scanner.nextLine().trim(); // Use trim() para evitar espaços extras
+                    }
+
+                    // Se o usuário confirmar
+                    if (userChoice.equals("y")) {
+                        Pessoa currentPerson = new Pessoa(name, 0);
+                        // Adiciona o registro temporário
+                        pessoas.add(currentPerson);
+                        // Insere no banco e atualiza o ID
+                        newPerson(conn, currentPerson);
+                        System.out.println(GREEN + "Registro adicionado com sucesso!" + RESET);
+                        System.out.println("ID gerado: " + currentPerson.getId());  // Exibindo o ID gerado
+                    } else {
+                        System.out.println("Registro cancelado. Retornando ao menu principal.");
                     }
                 }
+
 
                 // Logica para Vizualidar 'cRud'
                 case 2 -> {
@@ -146,8 +152,10 @@ public class Main {
                         System.out.println("Sem registros no banco de dados");
                         System.out.println();
                     }
-                    else
+                    else {
                         Methods.showAll(pessoas);
+                        System.out.println();
+                    }
                 }
 
                 // Logica para Atualizar 'crUd'
@@ -161,7 +169,7 @@ public class Main {
                         int index = Methods.search(pessoas, name, 0, pessoas.size() - 1);
 
                         if (index == -1) {
-                            System.out.println(name + " não encontrada(o)!");
+                            System.out.println(RED + "Erro: Nome não encontrado!" + RESET);
                             break;
                         }
 
@@ -173,9 +181,9 @@ public class Main {
                             System.out.printf("%-8d | %-25s | %-15s\n", currentPerson.getId(), currentPerson.getName(), currentPerson.getLevel());
 
                             System.out.println();
-                            System.out.println("1. Atualizar Nome.");
-                            System.out.println("2. Atualizar Status.");
-                            System.out.println("3. Voltar ao menu");
+                            System.out.println(BLUE+ "1. Atualizar Nome." +RESET);
+                            System.out.println(BLUE+"2. Atualizar Status." +RESET);
+                            System.out.println(RED+"3. Voltar ao menu" +RESET);
                             System.out.print("O que deseja atualizar? ");
                             choice = scanner.nextInt();
                             scanner.nextLine();
@@ -186,12 +194,13 @@ public class Main {
                                 String newName = scanner.nextLine();
                                 currentPerson.setName(newName);
                                 updatePerson(conn, currentPerson);
-                                System.out.println("Nome atualizado!");
+                                carregamento();
+                                System.out.println(GREEN + "Registro atualizado com sucesso!" + RESET);
                             } else if (choice == 2) {
                                 System.out.printf("Qual Status deseja definir %s? ('junior'/'pleno'/'senior') ", currentPerson.getName());
                                 String newStatus = scanner.nextLine();
                                 if (!newStatus.equalsIgnoreCase("junior") && !newStatus.equalsIgnoreCase("pleno") && !newStatus.equalsIgnoreCase("senior")) {
-                                    System.out.println("Opção inválida, insira novamente:");
+                                    System.out.println(RED +"Opção inválida!" +RESET);
                                 } else {
                                     switch (newStatus.toLowerCase()) {
                                         case "junior" -> currentPerson.setLevel(Pessoa.LevelType.JUNIOR.getLevel());
@@ -199,10 +208,11 @@ public class Main {
                                         case "senior" -> currentPerson.setLevel(Pessoa.LevelType.SENIOR.getLevel());
                                     }
                                     updatePerson(conn, currentPerson);
-                                    System.out.println("Status atualizado!");
+                                    carregamento();
+                                    System.out.println(GREEN + "Status atualizado com sucesso!" + RESET);
                                 }
                             } else if (choice != 3) {
-                                System.out.println("Opção inválida!");
+                                System.out.println(RED +"Opção inválida!" +RESET);
                                 break;
                             }
                         }
@@ -211,7 +221,7 @@ public class Main {
                     // Logica para Deletar 'cruD'
                 case 4 -> {
                     if (pessoas.isEmpty()) {
-                        System.out.println("Nenhum registro no banco de dados");
+                        System.out.println(RED +"Erro: Nenhum registro no banco de dados" +RESET);
                     } else {
                         // Exibe a lista de registros e pergunta qual deseja excluir
                         Methods.showAll(pessoas);
@@ -220,13 +230,13 @@ public class Main {
                         int index = Methods.search(pessoas, name, 0, pessoas.size() - 1);
 
                         if (index == -1) {
-                            System.out.println(name + " não encontrada(o)!");
+                            System.out.println(RED + "Erro: Nome não encontrado!" + RESET);
                         } else if (confirmAction(scanner, "Deseja mesmo excluir o registro de " + name)) {
                             // Exclui o registro selecionado
                             deletePerson(conn, name);
+                            carregamento();
                             pessoas.remove(index);  // Remove da lista local
-                            System.out.println("Registro excluído.");
-
+                            System.out.println(GREEN + "Registro excluido com sucesso!" + RESET);
                             // Verifica se a tabela está vazia e reseta a sequência
                             resetSequenceIfEmpty(conn);
                         } else {
@@ -243,10 +253,32 @@ public class Main {
                     terminate = true;
                 }
                 default ->
-                    System.out.println("Opção inválida!");
+                    System.out.println(RED+ "Opção inválida!" +RESET);
             }
         }
     }
+
+    private static void carregamento() throws InterruptedException {
+        System.out.print("Carregando: ");
+        for (int i = 0; i <= 100; i += 10) {
+            System.out.print("\rCarregando: [" + "=".repeat(i / 10) + " ".repeat(10 - i / 10) + "] " + i + "%");
+            Thread.sleep(200); // Simula o progresso
+        }
+        System.out.println("\nCarregamento concluído!");
+
+    }
+
+    private static void exibirMenu() {
+        System.out.println(GREEN + "========== MENU ==========" + RESET);
+        System.out.println("1. " + BLUE + "Adicionar Novo Registro" + RESET);
+        System.out.println("2. " + YELLOW + "Visualizar Registros" + RESET);
+        System.out.println("3. " + BLUE + "Atualizar Registro" + RESET);
+        System.out.println("4. " + RED + "Deletar Registro" + RESET);
+        System.out.println("5. " + RED + "Encerrar" + RESET);
+        System.out.println(GREEN + "==========================" + RESET);
+
+    }
+
 
     private static boolean confirmAction (Scanner scanner, String message) {
         char choice;
@@ -256,7 +288,7 @@ public class Main {
             scanner.nextLine();
             if (choice == 'y') return true;
             if (choice == 'n') return false;
-            System.out.println("Opção invalida. Tente novamente!");
+            System.out.println(RED+" ERRO: Opção invalida. Tente novamente!" +RESET);
         } while (true);
     }
 
@@ -265,18 +297,18 @@ public class Main {
 
 
     private static void logo() {
-        System.out.println("""
-                   _   __               _                  \s
-                  | | / /              | |                 \s
-                  | |/ /   __ _  _ __  | |__    __ _  _ __ \s
-                  |    \\  / _` || '_ \\ | '_ \\  / _` || '_ \\\s
-                  | |\\  \\| (_| || | | || |_) || (_| || | | |
-                  \\_| \\_/ \\__,_||_| |_||_.__/  \\__,_||_| |_|
-                  \s""");
-
+        System.out.println(YELLOW + """
+           _   __               _                 \s
+          | | / /              | |                \s
+          | |/ /   __ _  _ __  | |__    __ _  _ __\s
+          |    \\  / _` || '_ \\ | '_ \\  / _` || '_ \\
+          | |\\  \\| (_| || | | || |_) || (_| || | | |
+          \\_| \\_/ \\__,_||_| |_||_.__/  \\__,_||_| |_|
+       \s""" + RESET);
     }
 
-        private static void showAuthorMessage() {
+
+    private static void showAuthorMessage() {
         System.out.println("\n=== Software made by Mateus D Barros ===");
         logo();
         System.out.println("109 97 116 101 117 115 68 98 97 114 114 111 115");
